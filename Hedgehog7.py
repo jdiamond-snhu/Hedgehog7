@@ -171,7 +171,7 @@ with left_chart_column:
         with st.container(border=True):
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
             st.write("Hyper-growth mega caps concentrated in tech & digital assets.")
-            st.write("Average dividend yield mid-2026: 0.30%") 
+            st.write("Average dividend yield mid-2026: **0.30%**") 
             
             st.markdown("""
             * **NVDA** — NVIDIA Corp.  
