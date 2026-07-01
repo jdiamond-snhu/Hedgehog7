@@ -93,12 +93,15 @@ filtered_df = filtered_df[filtered_df.index <= GLOBAL_DATA_CEILING]
 # ---------------------------------------------------------
 # 4. MATH: THE DYNAMIC RE-INDEXING MATRIX
 # ---------------------------------------------------------
-# Isolate row position representing the custom user timeline start
-baseline_row = filtered_df.iloc
+# Create an explicit copy of the dataframe slice to prevent SettingWithCopyWarning
+filtered_df = filtered_df.copy()
+
+# Isolate the VERY FIRST available row using integer location .iloc[0]
+baseline_row = filtered_df.iloc[0]
 
 # Execute mathematical base transformation normalization to dynamic investment principal
 filtered_df["Mag7_Indexed"] = (filtered_df["Mag7_Raw"] / baseline_row["Mag7_Raw"]) * initial_investment
-filtered_df["Hedge7_Indexed"] = (filtered_df["Hedge7_Raw"] / baseline_row["Hedge7_Raw"]) * initial_investment
+filtered_df["Hedgehog7_Indexed"] = (filtered_df["Hedge7_Raw"] / baseline_row["Hedge7_Raw"]) * initial_investment
 filtered_df["SP500_Indexed"] = (filtered_df["SP500_Raw"] / baseline_row["SP500_Raw"]) * initial_investment
 
 # ---------------------------------------------------------
