@@ -166,7 +166,6 @@ left_chart_column, right_buffer_column = st.columns([3, 1])
 with left_chart_column:
     # Render the plot inside the left 75% boundary column space
     st.plotly_chart(fig, use_container_width=True)
-    
     st.markdown("---") # Visual separator line under the chart
     
     # 2. Split the 75% space into two equal side-by-side layout columns for the boxes
