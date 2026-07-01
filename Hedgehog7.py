@@ -171,6 +171,7 @@ with left_chart_column:
         with st.container(border=True):
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
             st.write("Hyper-growth mega caps concentrated in tech & digital assets.")
+            st.write("Average dividend yield mid-2026: 0.30%") 
             
             st.markdown("""
             * **NVDA** — NVIDIA Corp.  
@@ -193,7 +194,8 @@ with left_chart_column:
     with box_col2:
         with st.container(border=True):
             st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
-            st.caption("A diversified mix of structural moats across six distinct sectors.")
+            st.write("A diversified mix of structural moats across six distinct sectors.")
+            st.write("Average dividend yield mid-2026: 1.13%") 
             
             st.markdown("""
             * **AVGO** — Broadcom Inc.  
