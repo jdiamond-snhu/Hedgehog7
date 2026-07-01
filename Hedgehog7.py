@@ -154,22 +154,17 @@ fig.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
 )
 
-# Create layout constraints: 3 parts (75%) for the chart, 1 part (25%) for blank spacing
-left_chart_column, right_buffer_column = st.columns([3, 1])
-
-# Render the plot inside the left 75% boundary column space
-with left_chart_column:
-    st.plotly_chart(fig, use_container_width=True)
 # 1. Establish the main 75% left boundary to match the chart width
 left_chart_column, right_buffer_column = st.columns([3, 1])
 
 with left_chart_column:
     # Render the plot inside the left 75% boundary column space
     st.plotly_chart(fig, use_container_width=True)
+    
     st.markdown("---") # Visual separator line under the chart
     
     # 2. Split the 75% space into two equal side-by-side layout columns for the boxes
-    box_col1, box_col2 = st.columns([1, 1])
+    box_col1, box_col2 = st.columns(2)
     
     # Box A: The Magnificent 7 (Foxes Lineup)
     with box_col1:
@@ -177,7 +172,6 @@ with left_chart_column:
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
             st.caption("Hyper-growth, high-multiple mega caps chasing tech waves.")
             
-            # Punchy list format
             st.markdown("""
             * **NVDA** — NVIDIA Corp.
             * **MSFT** — Microsoft Corp.
@@ -194,7 +188,6 @@ with left_chart_column:
             st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
             st.caption("Nice and boring moats built for compounding stability.")
             
-            # Punchy list format
             st.markdown("""
             * **AVGO** — Broadcom Inc.
             * **LLY** — Eli Lilly & Co.
