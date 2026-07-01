@@ -135,7 +135,7 @@ fig.add_trace(ui_chart.Scatter(
     x=filtered_df.index, y=filtered_df["Fed_Rate"],
     name="💸 Effective Fed Funds Rate (Right Axis)",
     line=dict(color="green", width=1.5, dash="dot"),
-    yaxis="y2"  # Explicit layout configuration directive assignment
+    yaxis="y2"
 ))
 
 # Complete global plot architecture settings
@@ -147,7 +147,7 @@ fig.update_layout(
         title="Fed Funds Rate (%)",
         overlaying="y",
         side="right",
-        showgrid=False  # Clean output separation grid elimination
+        showgrid=False
     ),
     hovermode="x unified",
     template="plotly_white",
@@ -155,7 +155,7 @@ fig.update_layout(
 )
 
 # 1. Establish the main 75% left boundary to match the chart width
-left_chart_column, right_buffer_column = st.columns([3, 1])
+left_chart_column, right_buffer_column = st.columns()
 
 with left_chart_column:
     # Render the plot inside the left 75% boundary column space
@@ -170,30 +170,45 @@ with left_chart_column:
     with box_col1:
         with st.container(border=True):
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
-            st.caption("Hyper-growth, high-multiple mega caps chasing tech waves.")
+            st.caption("Hyper-growth mega caps concentrated in tech & digital assets.")
             
             st.markdown("""
-            * **NVDA** — NVIDIA Corp.
-            * **MSFT** — Microsoft Corp.
-            * **AAPL** — Apple Inc.
-            * **AMZN** — Amazon.com Inc.
-            * **META** — Meta Platforms Inc.
-            * **GOOGL** — Alphabet Inc.
-            * **TSLA** — Tesla Inc.
+            * **NVDA** — NVIDIA Corp.  
+              `Info Tech | Semiconductors`
+            * **MSFT** — Microsoft Corp.  
+              `Info Tech | Systems Software`
+            * **AAPL** — Apple Inc.  
+              `Info Tech | Tech Hardware & Storage`
+            * **AMZN** — Amazon.com Inc.  
+              `Consumer Discretionary | Broadline Retail`
+            * **META** — Meta Platforms Inc.  
+              `Communication Services | Interactive Media`
+            * **GOOGL** — Alphabet Inc.  
+              `Communication Services | Interactive Media`
+            * **TSLA** — Tesla Inc.  
+              `Consumer Discretionary | Automobile Mfrs`
             """)
 
     # Box B: The Hedgehog 7 (Hedgehogs Lineup)
     with box_col2:
         with st.container(border=True):
             st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
-            st.caption("Nice and boring moats built for compounding stability.")
+            st.caption("A diversified mix of structural moats across six distinct sectors.")
             
             st.markdown("""
-            * **AVGO** — Broadcom Inc.
-            * **LLY** — Eli Lilly & Co.
-            * **MCD** — McDonald's Corp.
-            * **JNJ** — Johnson & Johnson
-            * **BRK.B** — Berkshire Hathaway
-            * **V** — Visa Inc.
-            * **COST** — Costco Wholesale
+            * **AVGO** — Broadcom Inc.  
+              `Info Tech | Semiconductors`
+            * **LLY** — Eli Lilly & Co.  
+              `Health Care | Pharmaceuticals`
+            * **MCD** — McDonald's Corp.  
+              `Consumer Discretionary | Hotels, Restaurants & Leisure`
+            * **JNJ** — Johnson & Johnson  
+              `Health Care | Pharmaceuticals`
+            * **BRK.B** — Berkshire Hathaway  
+              `Financials | Multi-Sector Holdings`
+            * **V** — Visa Inc.  
+              `Financials | Transaction & Payment Processing`
+            * **COST** — Costco Wholesale  
+              `Consumer Staples | Consumer Staples Merchandise Retail`
             """)
+
