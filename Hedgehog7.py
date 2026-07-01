@@ -160,3 +160,48 @@ left_chart_column, right_buffer_column = st.columns([3, 1])
 # Render the plot inside the left 75% boundary column space
 with left_chart_column:
     st.plotly_chart(fig, use_container_width=True)
+# 1. Establish the main 75% left boundary to match the chart width
+left_chart_column, right_buffer_column = st.columns([3, 1])
+
+with left_chart_column:
+    # Render the plot inside the left 75% boundary column space
+    st.plotly_chart(fig, use_container_width=True)
+    
+    st.markdown("---") # Visual separator line under the chart
+    
+    # 2. Split the 75% space into two equal side-by-side layout columns for the boxes
+    box_col1, box_col2 = st.columns([1, 1])
+    
+    # Box A: The Magnificent 7 (Foxes Lineup)
+    with box_col1:
+        with st.container(border=True):
+            st.markdown("### 🦊 The Magnificent 7 (Foxes)")
+            st.caption("Hyper-growth, high-multiple mega caps chasing tech waves.")
+            
+            # Punchy list format
+            st.markdown("""
+            * **NVDA** — NVIDIA Corp.
+            * **MSFT** — Microsoft Corp.
+            * **AAPL** — Apple Inc.
+            * **AMZN** — Amazon.com Inc.
+            * **META** — Meta Platforms Inc.
+            * **GOOGL** — Alphabet Inc.
+            * **TSLA** — Tesla Inc.
+            """)
+
+    # Box B: The Hedgehog 7 (Hedgehogs Lineup)
+    with box_col2:
+        with st.container(border=True):
+            st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
+            st.caption("Nice and boring moats built for compounding stability.")
+            
+            # Punchy list format
+            st.markdown("""
+            * **AVGO** — Broadcom Inc.
+            * **LLY** — Eli Lilly & Co.
+            * **MCD** — McDonald's Corp.
+            * **JNJ** — Johnson & Johnson
+            * **BRK.B** — Berkshire Hathaway
+            * **V** — Visa Inc.
+            * **COST** — Costco Wholesale
+            """)
