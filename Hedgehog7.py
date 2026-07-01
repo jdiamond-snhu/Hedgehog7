@@ -170,7 +170,7 @@ with left_chart_column:
     with box_col1:
         with st.container(border=True):
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
-            st.caption("Hyper-growth mega caps concentrated in tech & digital assets.")
+            st.write("Hyper-growth mega caps concentrated in tech & digital assets.")
             
             st.markdown("""
             * **NVDA** — NVIDIA Corp.  
