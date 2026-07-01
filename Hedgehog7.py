@@ -44,7 +44,7 @@ start_year, end_year = st.sidebar.slider(
     step=1
 )
 
-# Enforce absolute dataset cutoff boundary as requested by the user
+# Enforce absolute dataset cutoff boundary
 GLOBAL_DATA_CEILING = pd.to_datetime("2026-06-30")
 
 # ---------------------------------------------------------
@@ -69,12 +69,14 @@ def load_clean_macro_environment():
     dates_index = pd.date_range(start="2010-01-01", end="2026-06-30", freq="MS")
     
     # Construct distinct return realities for separate index strategies
-    mag7_returns = np.random.normal(0.015, 0.055, len(dates_index))    # High variance growth
-    hedge7_returns = np.random.normal(0.009, 0.028, len(dates_index))  # Low variance value
+    mag7_returns = np.random.normal(0.015, 0.055, len(dates_index))    # High variance growth (Orange/Fox)
+    hedge7_returns = np.random.normal(0.009, 0.028, len(dates_index))  # Low variance value (Brown/Hedgehog)
+    sp500_returns = np.random.normal(0.011, 0.040, len(dates_index))   # Baseline market index (Black/S&P 500)
     
     df = pd.DataFrame({
         "Mag7_Raw": 100 * np.exp(np.cumsum(mag7_returns)),
-        "Hedge7_Raw": 100 * np.exp(np.cumsum(hedge7_returns))
+        "Hedge7_Raw": 100 * np.exp(np.cumsum(hedge7_returns)),
+        "SP500_Raw": 100 * np.exp(np.cumsum(sp500_returns))
     }, index=dates_index)
     
     # Consolidate core macroeconomic variables into a unified data structure
@@ -92,36 +94,44 @@ filtered_df = filtered_df[filtered_df.index <= GLOBAL_DATA_CEILING]
 # 4. MATH: THE DYNAMIC RE-INDEXING MATRIX
 # ---------------------------------------------------------
 # Isolate row position representing the custom user timeline start
-baseline_row = filtered_df.iloc[0]
+baseline_row = filtered_df.iloc
 
 # Execute mathematical base transformation normalization to dynamic investment principal
 filtered_df["Mag7_Indexed"] = (filtered_df["Mag7_Raw"] / baseline_row["Mag7_Raw"]) * initial_investment
 filtered_df["Hedge7_Indexed"] = (filtered_df["Hedge7_Raw"] / baseline_row["Hedge7_Raw"]) * initial_investment
+filtered_df["SP500_Indexed"] = (filtered_df["SP500_Raw"] / baseline_row["SP500_Raw"]) * initial_investment
 
 # ---------------------------------------------------------
 # 5. HIGH-DENSITY RENDERING DATA VISUALIZATION GRAPHIC
 # ---------------------------------------------------------
 fig = ui_chart.Figure()
 
-# Line 1: Magnificent 7 Average Portfolio Performance (Purple Vector)
+# Line 1: Magnificent 7 Average Portfolio Performance (Orange Vector - Fox theme)
 fig.add_trace(ui_chart.Scatter(
     x=filtered_df.index, y=filtered_df["Mag7_Indexed"],
-    name="Magnificent 7 Avg (Foxes)",
-    line=dict(color="purple", width=3)
-))
-
-# Line 2: Hedgehog 7 Average Portfolio Performance (Orange Vector)
-fig.add_trace(ui_chart.Scatter(
-    x=filtered_df.index, y=filtered_df["Hedge7_Indexed"],
-    name="Hedgehog 7 Avg (Hedgehogs)",
+    name="🦊 Magnificent 7 Avg (Foxes)",
     line=dict(color="orange", width=3)
 ))
 
-# Line 3: Federal Funds Rate (Thin Solid Green Vector on Independent Axis)
+# Line 2: Hedgehog 7 Average Portfolio Performance (Brown Vector - Hedgehog theme)
+fig.add_trace(ui_chart.Scatter(
+    x=filtered_df.index, y=filtered_df["Hedge7_Indexed"],
+    name="🦔 Hedgehog 7 Avg (Hedgehogs)",
+    line=dict(color="brown", width=3)
+))
+
+# Line 3: S&P 500 Market Benchmark (Solid Black Vector)
+fig.add_trace(ui_chart.Scatter(
+    x=filtered_df.index, y=filtered_df["SP500_Indexed"],
+    name="📊 S&P 500 Benchmark",
+    line=dict(color="black", width=2, dash="solid")
+))
+
+# Line 4: Federal Funds Rate (Thin Dotted Green Vector on Independent Axis)
 fig.add_trace(ui_chart.Scatter(
     x=filtered_df.index, y=filtered_df["Fed_Rate"],
-    name="Effective Fed Funds Rate (Right Axis)",
-    line=dict(color="green", width=1.5, dash="solid"),
+    name="💸 Effective Fed Funds Rate (Right Axis)",
+    line=dict(color="green", width=1.5, dash="dot"),
     yaxis="y2"  # Explicit layout configuration directive assignment
 ))
 
