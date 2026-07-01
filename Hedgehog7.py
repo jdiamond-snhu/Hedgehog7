@@ -195,7 +195,7 @@ with left_chart_column:
         with st.container(border=True):
             st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
             st.write("A diversified mix of structural moats across six distinct sectors.")
-            st.write("Average dividend yield mid-2026: 1.13%") 
+            st.write("Average dividend yield mid-2026: **1.13%**") 
             
             st.markdown("""
             * **AVGO** — Broadcom Inc.  
