@@ -9,8 +9,8 @@ import plotly.graph_objects as ui_chart
 # 1. CORE APPLICATION SURFACE CONFIGURATION
 # ---------------------------------------------------------
 st.set_page_config(page_title="The Hedgehog 7 Sandbox", layout="wide")
-st.title("Mag7 🦊 Foxes vs. Hedge7🦔 Hedgehogs: Portfolio Performance Sandbox")
-st.caption("By Jeff Diamond (2026). Testing the Magnificent 7 against a low-volatility, dividend-compounding alternative index.")
+st.title("🦊 Foxes vs. 🦔 Hedgehogs: Portfolio Performance Sandbox")
+st.caption("By Jeff Diamond (2026). Testing the Magnificent 7 against a low-volatility, dividend-compounding alternative index--Diamond's "Hedgehog 7."")
 
 # ---------------------------------------------------------
 # 2. USER INTERFACE & SIDEBAR NAVIGATION CONTROLS
