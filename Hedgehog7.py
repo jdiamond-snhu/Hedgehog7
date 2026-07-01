@@ -154,5 +154,9 @@ fig.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
 )
 
-# Pipe graphic object into the active layout framework surface
-st.plotly_chart(fig, use_container_width=True)
+# Create layout constraints: 3 parts (75%) for the chart, 1 part (25%) for blank spacing
+left_chart_column, right_buffer_column = st.columns([3, 1])
+
+# Render the plot inside the left 75% boundary column space
+with left_chart_column:
+    st.plotly_chart(fig, use_container_width=True)
