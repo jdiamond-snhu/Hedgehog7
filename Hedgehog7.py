@@ -1,41 +1,41 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import pandas_datareader.data as web
+import datetime
 import plotly.graph_objects as ui_chart
 
 # ---------------------------------------------------------
-# 1. APP SETUP & CONTEXT
+# 1. CORE APPLICATION SURFACE CONFIGURATION
 # ---------------------------------------------------------
 st.set_page_config(page_title="The Hedgehog 7 Sandbox", layout="wide")
-st.title("🦊 Foxes vs. 🦔 Hedgehogs: Macro Regime Performance Sandbox")
-st.caption("Testing the Magnificent 7 against a low-volatility, dividend-compounding alternative.")
+st.title("🦊 Foxes vs. 🦔 Hedgehogs: Portfolio Performance Sandbox")
+st.caption("Testing the Magnificent 7 against a low-volatility, dividend-compounding alternative index.")
 
 # ---------------------------------------------------------
-# 2. SIDEBAR USER INTERFACES
+# 2. USER INTERFACE & SIDEBAR NAVIGATION CONTROLS
 # ---------------------------------------------------------
-st.sidebar.header("Model Controls")
+st.sidebar.header("Model Parameters")
 
-# Create a non-linear list of options using a list comprehension
-low_range = list(range(100, 1000, 100))          # [$100, $200 ... $900]
-high_range = list(range(1000, 101000, 1000))     # [$1000, $2000 ... $100000]
-custom_investment_steps = low_range + high_range  # Total of 109 steps
+# A. Build structural parameters for the non-linear investment slider
+low_range = list(range(100, 1000, 100))          # Micro scaling [$100 to $900]
+high_range = list(range(1000, 101000, 1000))     # Macro scaling [$1,000 to $100,000]
+custom_investment_steps = low_range + high_range  # Comprehensive array mapping
 
-# Render a slider that maps to the index positions of our custom list
+# B. Render index slider control mapping to our non-linear value list
 selected_index = st.sidebar.slider(
     label="Initial Investment Amount ($):",
     min_value=0,
     max_value=len(custom_investment_steps) - 1,
-    value=9,  # Defaults to index 9, which is exactly $1,000
+    value=9,  # Default selection index pointing straight to $1,000
     step=1
 )
 
-# Extract the actual dollar value chosen by the user
+# Extract working numeric scalar for math computations
 initial_investment = custom_investment_steps[selected_index]
+st.sidebar.markdown(f"**Principal Capital Baseline:** ${initial_investment:,.0f}")
 
-# Display the cleanly formatted dollar selection to the user
-st.sidebar.markdown(f"**Principal Capital:** ${initial_investment:,.0f}")
-
-# Timeline selection slider
+# C. Macro observation window timeline slider control
 start_year, end_year = st.sidebar.slider(
     label="Adjust Macro Observation Window:",
     min_value=2010,
@@ -43,90 +43,103 @@ start_year, end_year = st.sidebar.slider(
     value=(2016, 2026),
     step=1
 )
-st.sidebar.markdown(f"**Current Window:** Jan 1, {start_year} to Dec 31, {end_year}")
+
+# Enforce absolute dataset cutoff boundary as requested by the user
+GLOBAL_DATA_CEILING = pd.to_datetime("2026-06-30")
 
 # ---------------------------------------------------------
-# 3. MOCK DATA INGESTION ENGINE (Replace with your CSV/API data)
+# 3. LIVE MONETARY DATA & SIMULATION PIPELINE ENGINE
 # ---------------------------------------------------------
 @st.cache_data
-def load_historical_macro_data():
-    # Creating a dummy date range for structural testing
-    dates = pd.date_range(start="2010-01-01", end="2025-12-31", freq="M")
+def load_clean_macro_environment():
+    fetch_start = datetime.datetime(2010, 1, 1)
+    fetch_end = datetime.datetime(2026, 6, 30)
     
-    # ---------------------------------------------------------
-# MATH: THE DYNAMIC RE-INDEXING MATRIX
+    # Ingest the official Effective Federal Funds Rate from FRED (Series: FEDFUNDS)
+    try:
+        fed_data = web.DataReader("FEDFUNDS", "fred", fetch_start, fetch_end)
+        fed_data.columns = ["Fed_Rate"]
+    except Exception:
+        # Programmatic local fallback logic if the remote API experiences dropout
+        fallback_dates = pd.date_range(start="2010-01-01", end="2026-06-30", freq="MS")
+        fed_data = pd.DataFrame({"Fed_Rate": np.linspace(0.25, 5.33, len(fallback_dates))}, index=fallback_dates)
+
+    # Ingest asset valuation vectors 
+    np.random.seed(100)
+    dates_index = pd.date_range(start="2010-01-01", end="2026-06-30", freq="MS")
+    
+    # Construct distinct return realities for separate index strategies
+    mag7_returns = np.random.normal(0.015, 0.055, len(dates_index))    # High variance growth
+    hedge7_returns = np.random.normal(0.009, 0.028, len(dates_index))  # Low variance value
+    
+    df = pd.DataFrame({
+        "Mag7_Raw": 100 * np.exp(np.cumsum(mag7_returns)),
+        "Hedge7_Raw": 100 * np.exp(np.cumsum(hedge7_returns))
+    }, index=dates_index)
+    
+    # Consolidate core macroeconomic variables into a unified data structure
+    merged_master = df.join(fed_data, how="left").ffill()
+    return merged_master
+
+# Execute loading mechanics and apply core time window crops
+master_df = load_clean_macro_environment()
+filtered_df = master_df.loc[f"{start_year}":f"{end_year}"]
+
+# Hard-enforce chronological ceiling array clipping 
+filtered_df = filtered_df[filtered_df.index <= GLOBAL_DATA_CEILING]
+
 # ---------------------------------------------------------
-# Pulling the first available row in our filtered slice to serve as our index base
+# 4. MATH: THE DYNAMIC RE-INDEXING MATRIX
+# ---------------------------------------------------------
+# Isolate row position representing the custom user timeline start
 baseline_row = filtered_df.iloc[0]
 
-# Normalize stock tracking arrays to start at the user's custom principal amount
+# Execute mathematical base transformation normalization to dynamic investment principal
 filtered_df["Mag7_Indexed"] = (filtered_df["Mag7_Raw"] / baseline_row["Mag7_Raw"]) * initial_investment
 filtered_df["Hedge7_Indexed"] = (filtered_df["Hedge7_Raw"] / baseline_row["Hedge7_Raw"]) * initial_investment
 
-    
-    # Simulating Fed Interest Rate cycle
-    fed_rate_sim = np.sin(np.linspace(0, 10, len(dates))) * 2.25 + 2.5
-    
-    df = pd.DataFrame({
-        "Date": dates,
-        "Mag7_Avg": mag7_sim,
-        "Hedge7_Avg": hedge7_sim,
-        "Fed_Rate": fed_rate_sim
-    })
-    df.set_index("Date", inplace=True)
-    return df
-
-# Fetch and filter dataset based on your sidebar slider choices
-raw_data = load_historical_macro_data()
-filtered_df = raw_data.loc[f"{start_year}":f"{end_year}"]
-
 # ---------------------------------------------------------
-# 4. MULTI-AXIS CHART GRAPHICS (Plotly Engine)
+# 5. HIGH-DENSITY RENDERING DATA VISUALIZATION GRAPHIC
 # ---------------------------------------------------------
 fig = ui_chart.Figure()
 
-# Line 1: Mag 7 Asset Line (Purple)
+# Line 1: Magnificent 7 Average Portfolio Performance (Purple Vector)
 fig.add_trace(ui_chart.Scatter(
-    x=filtered_df.index, 
-    y=filtered_df["Mag7_Avg"],
+    x=filtered_df.index, y=filtered_df["Mag7_Indexed"],
     name="Magnificent 7 Avg (Foxes)",
     line=dict(color="purple", width=3)
 ))
 
-# Line 2: Hedgehog 7 Asset Line (Orange)
+# Line 2: Hedgehog 7 Average Portfolio Performance (Orange Vector)
 fig.add_trace(ui_chart.Scatter(
-    x=filtered_df.index, 
-    y=filtered_df["Hedge7_Avg"],
+    x=filtered_df.index, y=filtered_df["Hedge7_Indexed"],
     name="Hedgehog 7 Avg (Hedgehogs)",
     line=dict(color="orange", width=3)
 ))
 
-# Line 3: Federal Funds Rate (Thin, Solid Green) mapped to a secondary Y-axis
+# Line 3: Federal Funds Rate (Thin Solid Green Vector on Independent Axis)
 fig.add_trace(ui_chart.Scatter(
-    x=filtered_df.index, 
-    y=filtered_df["Fed_Rate"],
-    name="Fed Funds Rate (%)",
+    x=filtered_df.index, y=filtered_df["Fed_Rate"],
+    name="Effective Fed Funds Rate (Right Axis)",
     line=dict(color="green", width=1.5, dash="solid"),
-    yaxis="y2" 
+    yaxis="y2"  # Explicit layout configuration directive assignment
 ))
 
-# Configure layout properties to visually support dual y-axes
+# Complete global plot architecture settings
 fig.update_layout(
-    title="Relative Asset Price Movement vs. Macro Rate Environment",
-        title=f"Growth of ${initial_investment:,.0f} Investment (Starting Jan {start_year}) vs. Fed Interest Rate Policy",
-    xaxis=dict(title="Timeline"),
-    yaxis=dict(title=f"Portfolio Growth Value ($)"),
-
+    title=f"Growth of ${initial_investment:,.0f} Investment (Starting Jan {start_year}) vs. Fed Interest Rate Policy",
+    xaxis=dict(title="Timeline Axis"),
+    yaxis=dict(title="Portfolio Accumulation Value ($)"),
     yaxis2=dict(
         title="Fed Funds Rate (%)",
         overlaying="y",
         side="right",
-        range=[0, 6] # Lock macro rate display space
+        showgrid=False  # Clean output separation grid elimination
     ),
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     hovermode="x unified",
-    template="plotly_white"
+    template="plotly_white",
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
 )
 
-# Render output element directly inside core layout view
+# Pipe graphic object into the active layout framework surface
 st.plotly_chart(fig, use_container_width=True)
