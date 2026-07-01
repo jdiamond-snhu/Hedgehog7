@@ -154,8 +154,8 @@ fig.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
 )
 
-# 1. Establish the main 75% left boundary to match the chart width
-left_chart_column, right_buffer_column = st.columns()
+# 1. Establish the main 75% left boundary to match the chart width (Fixes Line 158 error)
+left_chart_column, right_buffer_column = st.columns([3, 1])
 
 with left_chart_column:
     # Render the plot inside the left 75% boundary column space
