@@ -186,7 +186,7 @@ with left_chart_column:
     with box_col1:
         with st.container(border=True):
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
-             st.write("Average dividend yield: **0.30%**")
+            st.write("Average dividend yield: **0.30%**")
             st.write("Hyper-growth mega caps concentrated in high-beta tech sectors.")
             
             st.dataframe(
@@ -205,6 +205,7 @@ with left_chart_column:
             st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
             st.write("Diversified, low-beta structural moats built for volatility shield.")
             st.write("Average dividend yield: **1.13%**")
+            
             st.dataframe(
                 hedge7_data, 
                 hide_index=True, 
