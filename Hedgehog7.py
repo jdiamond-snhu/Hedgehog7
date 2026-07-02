@@ -182,34 +182,34 @@ with left_chart_column:
         "Beta Risk": [1.14, 0.42, 0.64, 0.53, 0.81, 0.94, 0.75]
     })
 
-    # Box A: The Magnificent 7 (Foxes Table)
+    # Box A: Update inside the Magnificent 7 dataframe render
     with box_col1:
         with st.container(border=True):
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
             st.caption("Hyper-growth mega caps concentrated in high-beta tech sectors.")
             
-            # Render interactive data table
             st.dataframe(
                 mag7_data, 
                 hide_index=True, 
                 use_container_width=True,
                 column_config={
-                    "Beta Risk": st.column_config.NumberColumn(format="%.2f")
+                    # Changes the configuration to force text-based flush-left layout
+                    "Beta Risk": st.column_config.TextColumn(help="Systematic Market Risk Coefficient")
                 }
             )
 
-    # Box B: The Hedgehog 7 (Hedgehogs Table)
+    # Box B: Update inside the Hedgehog 7 dataframe render
     with box_col2:
         with st.container(border=True):
             st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
             st.caption("Diversified, low-beta structural moats built for volatility shield.")
             
-            # Render interactive data table
             st.dataframe(
                 hedge7_data, 
                 hide_index=True, 
                 use_container_width=True,
                 column_config={
-                    "Beta Risk": st.column_config.NumberColumn(format="%.2f")
+                    # Changes the configuration to force text-based flush-left layout
+                    "Beta Risk": st.column_config.TextColumn(help="Systematic Market Risk Coefficient")
                 }
             )
