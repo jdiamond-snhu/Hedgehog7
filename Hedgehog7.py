@@ -154,8 +154,8 @@ fig.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
 )
 
-# 1. Establish the main 75% left boundary to match the chart width (Fixes Line 158 error)
-left_chart_column, right_buffer_column = st.columns([3, 1])
+# 1. Establish the main 75% left boundary to match the chart width
+left_chart_column, right_buffer_column = st.columns([0.75, 0.25])
 
 with left_chart_column:
     # Render the plot inside the left 75% boundary column space
@@ -166,51 +166,50 @@ with left_chart_column:
     # 2. Split the 75% space into two equal side-by-side layout columns for the boxes
     box_col1, box_col2 = st.columns(2)
     
-    # Box A: The Magnificent 7 (Foxes Lineup)
+    # --- PORTFOLIO MATRIX DATA ASSETS ---
+    # Constructing clean dataframes for the institutional table layouts
+    mag7_data = pd.DataFrame({
+        "Ticker": ["NVDA", "MSFT", "AAPL", "AMZN", "META", "GOOGL", "TSLA"],
+        "Asset Name": ["NVIDIA Corp.", "Microsoft Corp.", "Apple Inc.", "Amazon.com Inc.", "Meta Platforms", "Alphabet Inc.", "Tesla Inc."],
+        "Asset Classification": ["Semiconductors", "Systems Software", "Tech Hardware", "Broadline Retail", "Interactive Media", "Interactive Media", "Automobile Mfrs"],
+        "Beta Risk": [1.68, 1.11, 1.04, 1.16, 1.21, 1.03, 1.73]
+    })
+    
+    hedge7_data = pd.DataFrame({
+        "Ticker": ["AVGO", "LLY", "MCD", "JNJ", "BRK.B", "V", "COST"],
+        "Asset Name": ["Broadcom Inc.", "Eli Lilly & Co.", "McDonald's Corp.", "Johnson & Johnson", "Berkshire Hathaway", "Visa Inc.", "Costco Wholesale"],
+        "Asset Classification": ["Semiconductors", "Pharmaceuticals", "Restaurants/Leisure", "Pharmaceuticals", "Multi-Sector Value", "Transaction/Payments", "Consumer Merchandise"],
+        "Beta Risk": [1.14, 0.42, 0.64, 0.53, 0.81, 0.94, 0.75]
+    })
+
+    # Box A: The Magnificent 7 (Foxes Table)
     with box_col1:
         with st.container(border=True):
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
-            st.write("Hyper-growth mega caps concentrated in tech & digital assets.")
-            st.write("Average dividend yield mid-2026: **0.30%**") 
+            st.caption("Hyper-growth mega caps concentrated in high-beta tech sectors.")
             
-            st.markdown("""
-            * **NVDA** — NVIDIA Corp.  
-              `Info Tech | Semiconductors`
-            * **MSFT** — Microsoft Corp.  
-              `Info Tech | Systems Software`
-            * **AAPL** — Apple Inc.  
-              `Info Tech | Tech Hardware & Storage`
-            * **AMZN** — Amazon.com Inc.  
-              `Consumer Discretionary | Broadline Retail`
-            * **META** — Meta Platforms Inc.  
-              `Communication Services | Interactive Media`
-            * **GOOGL** — Alphabet Inc.  
-              `Communication Services | Interactive Media`
-            * **TSLA** — Tesla Inc.  
-              `Consumer Discretionary | Automobile Mfrs`
-            """)
+            # Render interactive data table
+            st.dataframe(
+                mag7_data, 
+                hide_index=True, 
+                use_container_width=True,
+                column_config={
+                    "Beta Risk": st.column_config.NumberColumn(format="%.2f")
+                }
+            )
 
-    # Box B: The Hedgehog 7 (Hedgehogs Lineup)
+    # Box B: The Hedgehog 7 (Hedgehogs Table)
     with box_col2:
         with st.container(border=True):
             st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
-            st.write("A diversified mix of structural moats across six distinct sectors.")
-            st.write("Average dividend yield mid-2026: **1.13%**") 
+            st.caption("Diversified, low-beta structural moats built for volatility shield.")
             
-            st.markdown("""
-            * **AVGO** — Broadcom Inc.  
-              `Info Tech | Semiconductors`
-            * **LLY** — Eli Lilly & Co.  
-              `Health Care | Pharmaceuticals`
-            * **MCD** — McDonald's Corp.  
-              `Consumer Discretionary | Hotels, Restaurants & Leisure`
-            * **JNJ** — Johnson & Johnson  
-              `Health Care | Pharmaceuticals`
-            * **BRK.B** — Berkshire Hathaway  
-              `Financials | Multi-Sector Holdings`
-            * **V** — Visa Inc.  
-              `Financials | Transaction & Payment Processing`
-            * **COST** — Costco Wholesale  
-              `Consumer Staples | Consumer Staples Merchandise Retail`
-            """)
-
+            # Render interactive data table
+            st.dataframe(
+                hedge7_data, 
+                hide_index=True, 
+                use_container_width=True,
+                column_config={
+                    "Beta Risk": st.column_config.NumberColumn(format="%.2f")
+                }
+            )
