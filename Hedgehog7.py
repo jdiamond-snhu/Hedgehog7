@@ -186,7 +186,7 @@ with left_chart_column:
     with box_col1:
         with st.container(border=True):
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
-            st.caption("Hyper-growth mega caps concentrated in high-beta tech sectors.")
+            st.write("Hyper-growth mega caps concentrated in high-beta tech sectors.")
             
             st.dataframe(
                 mag7_data, 
@@ -202,7 +202,7 @@ with left_chart_column:
     with box_col2:
         with st.container(border=True):
             st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
-            st.caption("Diversified, low-beta structural moats built for volatility shield.")
+            st.write("Diversified, low-beta structural moats built for volatility shield.")
             
             st.dataframe(
                 hedge7_data, 
