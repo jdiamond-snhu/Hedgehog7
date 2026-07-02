@@ -186,9 +186,9 @@ with left_chart_column:
     with box_col1:
         with st.container(border=True):
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
-            st.write("Average dividend yield: **0.30%**")
             st.write("Hyper-growth mega caps concentrated in high-beta tech sectors.")
-            
+            st.write("Average dividend yield: **0.30%**")
+                        
             st.dataframe(
                 mag7_data, 
                 hide_index=True, 
