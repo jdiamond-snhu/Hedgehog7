@@ -70,7 +70,7 @@ def load_clean_macro_environment():
 # ==============================================================================
 
 # Execute loading mechanics and apply core time window crops
-python# 1. Clean the named date column directly to force proper datetime types
+# 1. Clean the named date column directly to force proper datetime types
 # (This acts as a bulletproof fix regardless of how your CSV file was structured)
 if "Date" in df.columns:
     df["Date"] = pd.to_datetime(df["Date"])
