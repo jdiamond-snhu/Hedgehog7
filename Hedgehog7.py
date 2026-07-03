@@ -70,7 +70,7 @@ def load_clean_macro_environment():
 # ==============================================================================
 
 # Execute loading mechanics and apply core time window crops
-filtered_df = df[(df.index.date >= start_date) & (df.index.date <= end_date)].copy()
+filtered_df = df[df.index.isin(pd.date_range(start=start_date, end=end_date))].copy()
 
 # Ensure the database layer returned viable data rows before proceeding
 if not filtered_df.empty:
