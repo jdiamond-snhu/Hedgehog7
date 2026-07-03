@@ -1,124 +1,135 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.graph_objects as go
-from datetime import date
+import plotly.graph_objects as ui_chart
 
-# ==============================================================================
-# SECTION 1: GLOBAL UI SETTINGS & APP HEADER
-# ==============================================================================
-st.set_page_config(layout="wide", page_title="The Hedgehog 7 Dashboard")
+# ---------------------------------------------------------
+# 1. APP SETUP & CONTEXT
+# ---------------------------------------------------------
+st.set_page_config(page_title="The Hedgehog 7 Sandbox", layout="wide")
+st.title("🦊 Foxes vs. 🦔 Hedgehogs: Macro Regime Performance Sandbox")
+st.caption("Testing the Magnificent 7 against a low-volatility, dividend-compounding alternative.")
 
-st.title("🦔 The Hedgehog 7 Portfolio Matrix")
-st.markdown("""
-This institutional sandbox evaluates the structural performance of a low-beta, 
-high-free-cash-flow alternative index against the concentrated weight of the 
-traditional Magnificent 7 mega-caps across changing macroeconomic interest regimes.
-""")
+# ---------------------------------------------------------
+# 2. SIDEBAR USER INTERFACES
+# ---------------------------------------------------------
+st.sidebar.header("Model Controls")
 
-# ==============================================================================
-# SECTION 2: THE DATA INGESTION ENGINE
-# ==============================================================================
+# Create a non-linear list of options using a list comprehension
+low_range = list(range(100, 1000, 100))          # [$100, $200 ... $900]
+high_range = list(range(1000, 101000, 1000))     # [$1000, $2000 ... $100000]
+custom_investment_steps = low_range + high_range  # Total of 109 steps
+
+# Render a slider that maps to the index positions of our custom list
+selected_index = st.sidebar.slider(
+    label="Initial Investment Amount ($):",
+    min_value=0,
+    max_value=len(custom_investment_steps) - 1,
+    value=9,  # Defaults to index 9, which is exactly $1,000
+    step=1
+)
+
+# Extract the actual dollar value chosen by the user
+initial_investment = custom_investment_steps[selected_index]
+
+# Display the cleanly formatted dollar selection to the user
+st.sidebar.markdown(f"**Principal Capital:** ${initial_investment:,.0f}")
+
+# Timeline selection slider
+start_year, end_year = st.sidebar.slider(
+    label="Adjust Macro Observation Window:",
+    min_value=2010,
+    max_value=2026,
+    value=(2016, 2026),
+    step=1
+)
+st.sidebar.markdown(f"**Current Window:** Jan 1, {start_year} to Dec 31, {end_year}")
+
+# ---------------------------------------------------------
+# 3. MOCK DATA INGESTION ENGINE (Replace with your CSV/API data)
+# ---------------------------------------------------------
 @st.cache_data
-def load_portfolio_data():
-    # Load your historical stock array file
-    df = pd.read_csv("https://raw.githubusercontent.com/jdiamond-snhu/Hedgehog7/refs/heads/main/Hedgehog7_Data.csv")
+def load_historical_macro_data():
+    # Creating a dummy date range for structural testing
+    dates = pd.date_range(start="2010-01-01", end="2025-12-31", freq="M")
     
-    # Standardize the date tracking column right at the ingestion layer
-    if "Date" in df.columns:
-        df["Date"] = pd.to_datetime(df["Date"])
-        df.set_index("Date", inplace=True)
-    else:
-        df.index = pd.to_datetime(df.index)
-        
+    # ---------------------------------------------------------
+# MATH: THE DYNAMIC RE-INDEXING MATRIX
+# ---------------------------------------------------------
+# Pulling the first available row in our filtered slice to serve as our index base
+baseline_row = filtered_df.iloc[0]
+
+# Normalize stock tracking arrays to start at the user's custom principal amount
+filtered_df["Mag7_Indexed"] = (filtered_df["Mag7_Raw"] / baseline_row["Mag7_Raw"]) * initial_investment
+filtered_df["Hedge7_Indexed"] = (filtered_df["Hedge7_Raw"] / baseline_row["Hedge7_Raw"]) * initial_investment
+
+    
+    # Simulating Fed Interest Rate cycle
+    fed_rate_sim = np.sin(np.linspace(0, 10, len(dates))) * 2.25 + 2.5
+    
+    df = pd.DataFrame({
+        "Date": dates,
+        "Mag7_Avg": mag7_sim,
+        "Hedge7_Avg": hedge7_sim,
+        "Fed_Rate": fed_rate_sim
+    })
+    df.set_index("Date", inplace=True)
     return df
 
-# Initialize the data frame globally under 'df' to prevent naming conflicts
-df = load_portfolio_data()
+# Fetch and filter dataset based on your sidebar slider choices
+raw_data = load_historical_macro_data()
+filtered_df = raw_data.loc[f"{start_year}":f"{end_year}"]
 
-# Establish baseline absolute calendar boundaries from your source file
-min_date = df.index.min().date()
-max_date = df.index.max().date()
+# ---------------------------------------------------------
+# 4. MULTI-AXIS CHART GRAPHICS (Plotly Engine)
+# ---------------------------------------------------------
+fig = ui_chart.Figure()
 
-# ==============================================================================
-# SECTION 3: SIDEBAR CONTROL CENTER (DATE-WINDOW INTERACTION ONLY)
-# ==============================================================================
-st.sidebar.header("🕹️ Strategy Parameters")
-st.sidebar.markdown("Adjust the macro multi-year horizon to evaluate backtest performance.")
+# Line 1: Mag 7 Asset Line (Purple)
+fig.add_trace(ui_chart.Scatter(
+    x=filtered_df.index, 
+    y=filtered_df["Mag7_Avg"],
+    name="Magnificent 7 Avg (Foxes)",
+    line=dict(color="purple", width=3)
+))
 
-# The single, unified date window slider control
-start_date, end_date = st.sidebar.slider(
-    "Select Evaluation Window:",
-    min_value=min_date,
-    max_value=max_date,
-    value=(min_date, max_value),
-    format="YYYY-MM-DD"
-)
+# Line 2: Hedgehog 7 Asset Line (Orange)
+fig.add_trace(ui_chart.Scatter(
+    x=filtered_df.index, 
+    y=filtered_df["Hedge7_Avg"],
+    name="Hedgehog 7 Avg (Hedgehogs)",
+    line=dict(color="orange", width=3)
+))
 
-# ==============================================================================
-# SECTION 4: DATA ENGINE, FILTERING, INDICES AND CHART GENERATION
-# ==============================================================================
-# Convert sidebar selections into clean timestamp matching formats
-start_ts = pd.Timestamp(start_date)
-end_ts = pd.Timestamp(end_date)
+# Line 3: Federal Funds Rate (Thin, Solid Green) mapped to a secondary Y-axis
+fig.add_trace(ui_chart.Scatter(
+    x=filtered_df.index, 
+    y=filtered_df["Fed_Rate"],
+    name="Fed Funds Rate (%)",
+    line=dict(color="green", width=1.5, dash="solid"),
+    yaxis="y2" 
+))
 
-# Execute the structural time window slice cleanly
-filtered_df = df[(df.index >= start_ts) & (df.index <= end_ts)].copy()
-
-# Ensure the database layer returned viable data rows before proceeding
-if not filtered_df.empty:
-    # 1. Capture the raw starting baseline points on day one of selected window
-    mag7_base_value = filtered_df["Mag7_Total"].iloc[0]
-    hedge7_base_value = filtered_df["Hedge7_Total"].iloc[0]
-    
-    # 2. Re-calculate the dynamically normalized Base-100 column vectors 
-    filtered_df["Mag7_Indexed"] = (filtered_df["Mag7_Total"] / mag7_base_value) * 100
-    filtered_df["Hedge7_Indexed"] = (filtered_df["Hedge7_Total"] / hedge7_base_value) * 100
-else:
-    # Bulletproof fallback arrays to prevent layout breakage if window crops empty
-    filtered_df["Mag7_Indexed"] = 100.0
-    filtered_df["Hedge7_Indexed"] = 100.0
-
-# Build the interactive structural macro comparison chart with Plotly
-fig = go.Figure()
-
-# Plot Line A: The Magnificent 7 Portfolio Vector (The Foxes)
-fig.add_trace(
-    go.Scatter(
-        x=filtered_df.index,
-        y=filtered_df["Mag7_Indexed"],
-        name="The Magnificent 7 (Foxes)",
-        line=dict(color="#FF4B4B", width=2.5),
-        hovertemplate="%{y:.2f}"
-    )
-)
-
-# Plot Line B: The Hedgehog 7 Portfolio Vector (The Hedgehogs)
-fig.add_trace(
-    go.Scatter(
-        x=filtered_df.index,
-        y=filtered_df["Hedge7_Indexed"],
-        name="The Hedgehog 7 (Hedgehogs)",
-        line=dict(color="#1F77B4", width=2.5),
-        hovertemplate="%{y:.2f}"
-    )
-)
-
-# Inject structural layout formatting to enforce an institutional style grid
+# Configure layout properties to visually support dual y-axes
 fig.update_layout(
-    xaxis_title="Timeline Multi-Year Horizon",
-    yaxis_title="Cumulative Growth Index (Base 100)",
-    hovermode="x unified",
-    margin=dict(l=0, r=0, t=10, b=0),
-    legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=1.02,
-        xanchor="right",
-        x=1
+    title="Relative Asset Price Movement vs. Macro Rate Environment",
+        title=f"Growth of ${initial_investment:,.0f} Investment (Starting Jan {start_year}) vs. Fed Interest Rate Policy",
+    xaxis=dict(title="Timeline"),
+    yaxis=dict(title=f"Portfolio Growth Value ($)"),
+
+    yaxis2=dict(
+        title="Fed Funds Rate (%)",
+        overlaying="y",
+        side="right",
+        range=[0, 6] # Lock macro rate display space
     ),
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    hovermode="x unified",
     template="plotly_white"
 )
+
+# Render output element directly inside core layout view
+st.plotly_chart(fig, use_container_width=True)
 
 # ==============================================================================
 # SECTION 5: INSTITUTIONAL HORIZONTAL CONTAINER BOXES
