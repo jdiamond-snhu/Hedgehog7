@@ -22,8 +22,6 @@ low_range = list(range(100, 1000, 100))          # Micro scaling [$100 to $900]
 high_range = list(range(1000, 101000, 1000))     # Macro scaling [$1,000 to $100,000]
 custom_investment_steps = low_range + high_range  # Comprehensive array mapping
 
-)
-
 # Extract working numeric scalar for math computations
 initial_investment = custom_investment_steps[selected_index]
 st.sidebar.markdown(f"**Principal Capital Baseline:** ${initial_investment:,.0f}")
