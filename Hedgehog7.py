@@ -65,87 +65,71 @@ def load_clean_macro_environment():
     merged_master = df.join(fed_data, how="left").ffill()
     return merged_master
 
+# ==============================================================================
+# SECTION 4: DATA ENGINE, FILTERING, INDICES AND CHART GENERATION
+# ==============================================================================
+
 # Execute loading mechanics and apply core time window crops
-master_df = load_clean_macro_environment()
-filtered_df = master_df.loc[f"{start_year}":f"{end_year}"]
+filtered_df = df[(df.index.date >= start_date) & (df.index.date <= end_date)].copy()
 
-# Hard-enforce chronological ceiling array clipping 
-filtered_df = filtered_df[filtered_df.index <= GLOBAL_DATA_CEILING]
-
-# ---------------------------------------------------------
-# 4. MATH: THE DYNAMIC RE-INDEXING MATRIX
-# ---------------------------------------------------------
-# Create an explicit copy of the dataframe slice to prevent SettingWithCopyWarning
-filtered_df = filtered_df.copy()
-
-# Isolate the VERY FIRST available row using integer location .iloc[0]
-baseline_row = filtered_df.iloc[0]
-# --- STEP 1: RESTORE THE ACCOUNTING BASELINE ENGINE ---
-# Ensure your data frame has a clean starting row vector
+# Ensure the database layer returned viable data rows before proceeding
 if not filtered_df.empty:
-    # 1. Grab the absolute raw starting price or value on day one of the filtered window
-    mag7_start_val = filtered_df["Mag7_Total"].iloc[0]
-    hedge7_start_val = filtered_df["Hedge7_Total"].iloc[0]
+    # 1. Capture the raw starting price/value base points on day one of selected window
+    mag7_base_value = filtered_df["Mag7_Total"].iloc[0]
+    hedge7_base_value = filtered_df["Hedge7_Total"].iloc[0]
     
-    # 2. Re-calculate the indexed base-100 column vectors dynamically
-    # This divides current data by the start date and normalizes it to 100
-    filtered_df["Mag7_Indexed"] = (filtered_df["Mag7_Total"] / mag7_start_val) * 100
-    filtered_df["Hedge7_Indexed"] = (filtered_df["Hedge7_Total"] / hedge7_start_val) * 100
+    # 2. Re-calculate the dynamically normalized Base-100 column vectors 
+    # This divides each date's aggregate value by the base price and roots at 100
+    filtered_df["Mag7_Indexed"] = (filtered_df["Mag7_Total"] / mag7_base_value) * 100
+    filtered_df["Hedge7_Indexed"] = (filtered_df["Hedge7_Total"] / hedge7_base_value) * 100
 else:
-    # Fail-safe backup defaults if the date range returns zero rows
-    filtered_df["Mag7_Indexed"] = 100
-    filtered_df["Hedge7_Indexed"] = 100
-# ---------------------------------------------------------
-# 5. HIGH-DENSITY RENDERING DATA VISUALIZATION GRAPHIC
-# ---------------------------------------------------------
-fig = ui_chart.Figure()
+    # Bulletproof fallback arrays to prevent layout breakage if window crops empty
+    filtered_df["Mag7_Indexed"] = 100.0
+    filtered_df["Hedge7_Indexed"] = 100.0
 
-# Line 1: Magnificent 7 Average Portfolio Performance (Orange Vector - Fox theme)
-fig.add_trace(ui_chart.Scatter(
-    x=filtered_df.index, y=filtered_df["Mag7_Indexed"],
-    name="🦊 Magnificent 7 Avg (Foxes)",
-    line=dict(color="orange", width=3)
-))
+# Build the interactive structural macro comparison chart with Plotly
+fig = go.Figure()
 
-# Line 2: Hedgehog 7 Average Portfolio Performance (Brown Vector - Hedgehog theme)
-fig.add_trace(ui_chart.Scatter(
-    x=filtered_df.index, y=filtered_df["Hedge7_Indexed"],
-    name="🦔 Hedgehog 7 Avg (Hedgehogs)",
-    line=dict(color="brown", width=3)
-))
+# Plot Line A: The Magnificent 7 Portfolio Vector (The Foxes)
+fig.add_trace(
+    go.Scatter(
+        x=filtered_df.index,
+        y=filtered_df["Mag7_Indexed"],
+        name="The Magnificent 7 (Foxes)",
+        line=dict(color="#FF4B4B", width=2.5),
+        hovertemplate="%{y:.2f}"
+    )
+)
 
-# Line 3: S&P 500 Market Benchmark (Solid Black Vector)
-fig.add_trace(ui_chart.Scatter(
-    x=filtered_df.index, y=filtered_df["SP500_Indexed"],
-    name="📊 S&P 500 Benchmark",
-    line=dict(color="black", width=2, dash="solid")
-))
+# Plot Line B: The Hedgehog 7 Portfolio Vector (The Hedgehogs)
+fig.add_trace(
+    go.Scatter(
+        x=filtered_df.index,
+        y=filtered_df["Hedge7_Indexed"],
+        name="The Hedgehog 7 (Hedgehogs)",
+        line=dict(color="#1F77B4", width=2.5),
+        hovertemplate="%{y:.2f}"
+    )
+)
 
-# Line 4: Federal Funds Rate (Thin Dotted Green Vector on Independent Axis)
-fig.add_trace(ui_chart.Scatter(
-    x=filtered_df.index, y=filtered_df["Fed_Rate"],
-    name="💸 Effective Fed Funds Rate (Right Axis)",
-    line=dict(color="green", width=1.5, dash="dot"),
-    yaxis="y2"
-))
-
-# Complete global plot architecture settings
+# Inject structural layout formatting to enforce an institutional style grid
 fig.update_layout(
-    title=f"Growth of ${initial_investment:,.0f} Investment (Starting Jan {start_year}) vs. Fed Interest Rate Policy",
-    xaxis=dict(title="Timeline Axis"),
-    yaxis=dict(title="Portfolio Accumulation Value ($)"),
-    yaxis2=dict(
-        title="Fed Funds Rate (%)",
-        overlaying="y",
-        side="right",
-        showgrid=False
-    ),
+    xaxis_title="Timeline Multi-Year Horizon",
+    yaxis_title="Cumulative Growth Index (Base 100)",
     hovermode="x unified",
-    template="plotly_white",
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    margin=dict(l=0, r=0, t=10, b=0),
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ),
+    template="plotly_white"
 )
 
 # 1. Establish the main 75% left boundary to match the chart width
+
 left_chart_column, right_buffer_column = st.columns([0.75, 0.25])
 
 with left_chart_column:
