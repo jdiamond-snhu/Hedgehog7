@@ -74,7 +74,7 @@ def load_clean_macro_environment():
     df.index = pd.to_datetime(df.index)
 
 # Apply the structural time window slice using standard timestamp values 
-filtered_df = df[(df.index >= pd.Timestamp(start_date)) & (df.index <= pd.Timestamp(end_date))].copy() 
+    filtered_df = df[(df.index >= pd.Timestamp(start_date)) & (df.index <= pd.Timestamp(end_date))].copy() 
 
 # Ensure the database layer returned viable data rows before proceeding 
 if not filtered_df.empty: 
