@@ -80,7 +80,21 @@ filtered_df = filtered_df.copy()
 
 # Isolate the VERY FIRST available row using integer location .iloc[0]
 baseline_row = filtered_df.iloc[0]
-
+# --- STEP 1: RESTORE THE ACCOUNTING BASELINE ENGINE ---
+# Ensure your data frame has a clean starting row vector
+if not filtered_df.empty:
+    # 1. Grab the absolute raw starting price or value on day one of the filtered window
+    mag7_start_val = filtered_df["Mag7_Total"].iloc[0]
+    hedge7_start_val = filtered_df["Hedge7_Total"].iloc[0]
+    
+    # 2. Re-calculate the indexed base-100 column vectors dynamically
+    # This divides current data by the start date and normalizes it to 100
+    filtered_df["Mag7_Indexed"] = (filtered_df["Mag7_Total"] / mag7_start_val) * 100
+    filtered_df["Hedge7_Indexed"] = (filtered_df["Hedge7_Total"] / hedge7_start_val) * 100
+else:
+    # Fail-safe backup defaults if the date range returns zero rows
+    filtered_df["Mag7_Indexed"] = 100
+    filtered_df["Hedge7_Indexed"] = 100
 # ---------------------------------------------------------
 # 5. HIGH-DENSITY RENDERING DATA VISUALIZATION GRAPHIC
 # ---------------------------------------------------------
