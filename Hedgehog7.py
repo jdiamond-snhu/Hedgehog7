@@ -70,7 +70,7 @@ def load_clean_macro_environment():
 # ==============================================================================
 
 # 1. Clean the named date column directly using your original 'data' variable name
-if "Date" in df.columns:
+if "Date" in data.columns:
     data["Date"] = pd.to_datetime(data["Date"])
     data.set_index("Date", inplace=True)
 elif data.index.name != "Date":
