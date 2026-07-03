@@ -71,7 +71,7 @@ def load_clean_macro_environment():
 
 # Execute loading mechanics and apply core time window crops
 # Convert the dataframe index to explicit pandas datetime elements to fix the crash
-df.index = pd.to_datetime(df.index)
+    df.index = pd.to_datetime(df.index)
 
 # Apply the structural time window slice using standard timestamp values
 filtered_df = df[(df.index >= pd.Timestamp(start_date)) & (df.index <= pd.Timestamp(end_date))].copy()
