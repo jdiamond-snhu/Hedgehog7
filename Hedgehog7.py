@@ -22,7 +22,7 @@ traditional Magnificent 7 mega-caps across changing macroeconomic interest regim
 @st.cache_data
 def load_portfolio_data():
     # Load your historical stock array file
-    df = pd.read_csv("https://raw.githubusercontent.com/jdiamond-snhu/Hedgehog7/refs/heads/main/Hedgehog7.py")
+    df = pd.read_csv("https://githubusercontent.com")
     
     # Standardize the date tracking column right at the ingestion layer
     if "Date" in df.columns:
