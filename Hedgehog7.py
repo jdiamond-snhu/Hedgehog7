@@ -22,13 +22,6 @@ low_range = list(range(100, 1000, 100))          # Micro scaling [$100 to $900]
 high_range = list(range(1000, 101000, 1000))     # Macro scaling [$1,000 to $100,000]
 custom_investment_steps = low_range + high_range  # Comprehensive array mapping
 
-# B. Render index slider control mapping to our non-linear value list
-selected_index = st.sidebar.slider(
-    label="Initial Investment Amount ($):",
-    min_value=0,
-    max_value=len(custom_investment_steps) - 1,
-    value=9,  # Default selection index pointing straight to $1,000
-    step=1
 )
 
 # Extract working numeric scalar for math computations
