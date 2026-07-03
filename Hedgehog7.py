@@ -73,11 +73,18 @@ def load_clean_macro_environment():
 # Convert the dataframe index to explicit pandas datetime elements to fix the crash
     df.index = pd.to_datetime(df.index)
 
-# Apply the structural time window slice using standard timestamp values 
-    filtered_df = df[(df.index >= pd.Timestamp(start_date)) & (df.index <= pd.Timestamp(end_date))].copy() 
+# Force the main data index to standard pandas datetime format first
+df.index = pd.to_datetime(df.index)
+
+# Create the explicit timestamp parameters from your sidebar date selectors
+start_ts = pd.Timestamp(start_date)
+end_ts = pd.Timestamp(end_date)
+
+# Execute the time window data slice cleanly across a separate line
+filtered_df = df[(df.index >= start_ts) & (df.index <= end_ts)].copy()
 
 # Ensure the database layer returned viable data rows before proceeding 
-if not filtered_df.empty: 
+if not filtered_df.empty:
     # 1. Capture the raw starting price/value base points on day one of selected window 
     mag7_base_value = filtered_df["Mag7_Total"].iloc[0] 
     hedge7_base_value = filtered_df["Hedge7_Total"].iloc[0] 
