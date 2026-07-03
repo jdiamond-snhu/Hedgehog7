@@ -65,7 +65,7 @@ filtered_df["Hedge7_Indexed"] = (filtered_df["Hedge7_Raw"] / baseline_row["Hedge
 
     
     # Simulating Fed Interest Rate cycle
-    fed_rate_sim = np.sin(np.linspace(0, 10, len(dates))) * 2.25 + 2.5
+fed_rate_sim = np.sin(np.linspace(0, 10, len(dates))) * 2.25 + 2.5
     
     df = pd.DataFrame({
         "Date": dates,
