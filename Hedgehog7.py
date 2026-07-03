@@ -17,15 +17,6 @@ st.write("By Jeff Diamond (2026). Testing the Magnificent 7 against my low-volat
 # ---------------------------------------------------------
 st.sidebar.header("Model Parameters")
 
-# A. Build structural parameters for the non-linear investment slider
-low_range = list(range(100, 1000, 100))          # Micro scaling [$100 to $900]
-high_range = list(range(1000, 101000, 1000))     # Macro scaling [$1,000 to $100,000]
-custom_investment_steps = low_range + high_range  # Comprehensive array mapping
-)
-# Extract working numeric scalar for math computations
-initial_investment = custom_investment_steps[selected_index]
-st.sidebar.markdown(f"**Principal Capital Baseline:** ${initial_investment:,.0f}")
-
 # C. Macro observation window timeline slider control
 start_year, end_year = st.sidebar.slider(
     label="Adjust Macro Observation Window:",
