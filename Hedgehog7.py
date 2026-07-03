@@ -69,22 +69,19 @@ def load_clean_macro_environment():
 # SECTION 4: DATA ENGINE, FILTERING, INDICES AND CHART GENERATION
 # ==============================================================================
 
-# Execute loading mechanics and apply core time window crops
-# 1. Clean the named date column directly to force proper datetime types
-# (This acts as a bulletproof fix regardless of how your CSV file was structured)
-if "Date" in df.columns:
-    df["Date"] = pd.to_datetime(df["Date"])
-    df.set_index("Date", inplace=True)
-elif df.index.name != "Date":
-    # If the index is already named or strings, safely force convert it anyway
-    df.index = pd.to_datetime(df.index)
+# 1. Clean the named date column directly using your original 'data' variable name
+if "Date" in data.columns:
+    data["Date"] = pd.to_datetime(data["Date"])
+    data.set_index("Date", inplace=True)
+elif data.index.name != "Date":
+    data.index = pd.to_datetime(data.index)
 
 # 2. Convert sidebar selections into clean timestamp matching formats
 start_ts = pd.Timestamp(start_date)
 end_ts = pd.Timestamp(end_date)
 
-# 3. Securely slice the time window copy
-filtered_df = df[(df.index >= start_ts) & (df.index <= end_ts)].copy()
+# 3. Securely slice the time window copy into filtered_df
+filtered_df = data[(data.index >= start_ts) & (data.index <= end_ts)].copy()
 
 # Ensure the database layer returned viable data rows before proceeding 
 if not filtered_df.empty:
