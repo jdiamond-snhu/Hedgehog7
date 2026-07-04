@@ -9,7 +9,7 @@ import plotly.graph_objects as ui_chart
 st.set_page_config(page_title="The Hedgehog 7 Sandbox", layout="wide")
 st.title("Mag 7 🦊 Foxes vs. the 🦔 Hedgehog 7: Macro Regime Performance Sandbox")
 st.caption("Designed by Jeff Diamond-Radecki, 2026")
-st.write("Testing the Magnificent 7 against my low-volatility, dividend-compounding alternative index. Inspired by Jim Collins' book, *Good to Great.*")
+st.write("Testing the Magnificent 7 against my low-volatility, dividend-compounding alternative index. Inspired by the principles set forth by Jim Collins in his book, *Good to Great.*")
 
 # ---------------------------------------------------------
 # 2. SIDEBAR USER INTERFACES (Timeline Filter Only)
