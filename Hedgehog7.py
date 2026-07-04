@@ -38,6 +38,7 @@ def load_historical_macro_data():
     np.random.seed(42)
     mag7_sim = 100 * np.exp(np.cumsum(np.random.normal(0.018, 0.06, len(dates))))
     hedge7_sim = 100 * np.exp(np.cumsum(np.random.normal(0.012, 0.03, len(dates))))
+    sp500_sim = 100 * np.exp(np.cumsum(np.random.normal(0.014, 0.04, len(dates)))) # S&P 500 Baseline Curve
     
     # Simulating Fed Interest Rate cycles
     fed_rate_sim = np.sin(np.linspace(0, 10, len(dates))) * 2.25 + 2.5
@@ -45,6 +46,7 @@ def load_historical_macro_data():
     df = pd.DataFrame({
         "Mag7_Raw": mag7_sim,
         "Hedge7_Raw": hedge7_sim,
+        "SP500_Raw": sp500_sim,
         "Fed_Rate": fed_rate_sim
     }, index=dates)
     
@@ -65,16 +67,18 @@ if not filtered_df.empty:
     # Force baseline metrics to normalize and anchor cleanly at 100.0
     filtered_df["Mag7_Indexed"] = (filtered_df["Mag7_Raw"] / baseline_row["Mag7_Raw"]) * 100
     filtered_df["Hedge7_Indexed"] = (filtered_df["Hedge7_Raw"] / baseline_row["Hedge7_Raw"]) * 100
+    filtered_df["SP500_Indexed"] = (filtered_df["SP500_Raw"] / baseline_row["SP500_Raw"]) * 100
 else:
     filtered_df["Mag7_Indexed"] = 100.0
     filtered_df["Hedge7_Indexed"] = 100.0
+    filtered_df["SP500_Indexed"] = 100.0
 
 # ---------------------------------------------------------
 # 5. MULTI-AXIS CHART GRAPHICS (Plotly Engine)
 # ---------------------------------------------------------
 fig = ui_chart.Figure()
 
-# Line 1: Mag 7 Asset Line (Purple)
+# Line 1: Mag 7 Asset Line (Red)
 fig.add_trace(ui_chart.Scatter(
     x=filtered_df.index,
     y=filtered_df["Mag7_Indexed"],
@@ -83,7 +87,7 @@ fig.add_trace(ui_chart.Scatter(
     hovertemplate="%{y:.2f}"
 ))
 
-# Line 2: Hedgehog 7 Asset Line (Orange)
+# Line 2: Hedgehog 7 Asset Line (Blue)
 fig.add_trace(ui_chart.Scatter(
     x=filtered_df.index,
     y=filtered_df["Hedge7_Indexed"],
@@ -92,19 +96,28 @@ fig.add_trace(ui_chart.Scatter(
     hovertemplate="%{y:.2f}"
 ))
 
-# Line 3: Federal Funds Rate (Thin, Solid Green) mapped to a secondary Y-axis
+# NEW Line 3: S&P 500 Index Benchmark (Thin, Solid Black)
+fig.add_trace(ui_chart.Scatter(
+    x=filtered_df.index,
+    y=filtered_df["SP500_Indexed"],
+    name="S&P 500 Index Benchmark",
+    line=dict(color="#000000", width=1.5, dash="solid"),
+    hovertemplate="%{y:.2f}"
+))
+
+# Line 4: Federal Funds Rate (Thin, DASHED Green) mapped to secondary Y-axis
 fig.add_trace(ui_chart.Scatter(
     x=filtered_df.index,
     y=filtered_df["Fed_Rate"],
     name="Fed Funds Rate (%)",
-    line=dict(color="green", width=1.5, dash="solid"),
+    line=dict(color="green", width=1.5, dash="dash"), # Updated styling to dash
     yaxis="y2",
     hovertemplate="%{y:.2f}%"
 ))
 
 # Configure layout properties to visually support dual y-axes
 fig.update_layout(
-    title=f"Cumulative Growth Index (Base 100) from Year {start_year} vs. Fed Interest Rate Policy",
+    title=f"Cumulative Growth Index (Base 100) vs. Fed Interest Rate Policy Horizon",
     xaxis=dict(title="Timeline Horizon"),
     yaxis=dict(title="Cumulative Growth Index (Base 100)"),
     yaxis2=dict(
