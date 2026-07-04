@@ -7,7 +7,7 @@ import plotly.graph_objects as ui_chart
 # 1. APP SETUP & CONTEXT
 # ---------------------------------------------------------
 st.set_page_config(page_title="The Hedgehog 7 Sandbox", layout="wide")
-st.title("🦊 Foxes vs. 🦔 Hedgehogs: Macro Regime Performance Sandbox")
+st.title("Mag 7 🦊 Foxes vs. the 🦔 Hedgehog 7: Macro Regime Performance Sandbox")
 st.caption("Testing the Magnificent 7 against a low-volatility, dividend-compounding alternative index.")
 
 # ---------------------------------------------------------
