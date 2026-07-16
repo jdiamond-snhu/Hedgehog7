@@ -159,7 +159,7 @@ with left_chart_column:
         "Ticker": ["JNJ", "KO", "COST", "MCD", "MSDL", "DEA", "V"],
         "Asset Name": ["Johnson & Johnson", "The Coca-Cola Co.", "Costco Wholesale Corp.", "McDonald's Corp.", "Morgan Stanley Direct Lending Fund", "Easterly Government Properties, Inc.", "Visa Inc."],
         "Asset Classification": ["Pharmaceuticals", "Beverages", "Consumer Merchandise", "Restaurants/Leisure", "Financial Services", "Real Estate / REIT", "Transaction/Payments"],
-        "Beta Risk": ["0.53", "0.60", "0.75", "0.64", "0.61", "0.95", "0.94"]
+        "Beta Risk": ["0.49", "0.53", "0.65", "0.58", "0.48", "0.60", "0.97"]
     })
 
     # Box A: The Magnificent 7 Container Box
@@ -167,7 +167,7 @@ with left_chart_column:
         with st.container(border=True):
             st.markdown("### 🦊 The Magnificent 7 (Foxes)")
             st.write("Hyper-growth mega caps concentrated in high-beta tech sectors.")
-            st.write("Average dividend yield: **0.30%**")
+            st.write("Average dividend yield: **0.30%** Average Beta: **1.32**")
             
             st.dataframe(
                 mag7_data, 
@@ -183,7 +183,7 @@ with left_chart_column:
         with st.container(border=True):
             st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
             st.write("Diversified, low-beta structural moats built for volatility shield.")
-            st.write("Average dividend yield: **3.94%**")
+            st.write("Average dividend yield: **3.94%** Average Beta: **.61**")
             
             st.dataframe(
                 hedge7_data, 
