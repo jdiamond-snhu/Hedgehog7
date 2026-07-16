@@ -156,10 +156,10 @@ with left_chart_column:
     })
     
     hedge7_data = pd.DataFrame({
-        "Ticker": ["AVGO", "LLY", "MCD", "JNJ", "BRK.B", "V", "COST"],
-        "Asset Name": ["Broadcom Inc.", "Eli Lilly & Co.", "McDonald's Corp.", "Johnson & Johnson", "Berkshire Hathaway", "Visa Inc.", "Costco Wholesale"],
-        "Asset Classification": ["Semiconductors", "Pharmaceuticals", "Restaurants/Leisure", "Pharmaceuticals", "Multi-Sector Value", "Transaction/Payments", "Consumer Merchandise"],
-        "Beta Risk": ["1.14", "0.42", "0.64", "0.53", "0.81", "0.94", "0.75"]
+        "Ticker": ["JNJ", "KO", "COST", "MCD", "MSDL", "DEA", "V"],
+        "Asset Name": ["Johnson & Johnson", "The Coca-Cola Co.", "Costco Wholesale Corp.", "McDonald's Corp.", "Morgan Stanley Direct Lending Fund", "Easterly Government Properties, Inc.", "Visa Inc."],
+        "Asset Classification": ["Pharmaceuticals", "Beverages", "Consumer Merchandise", "Restaurants/Leisure", "Financial Services", "Real Estate / REIT", "Transaction/Payments"],
+        "Beta Risk": ["0.53", "0.60", "0.75", "0.64", "0.61", "0.95", "0.94"]
     })
 
     # Box A: The Magnificent 7 Container Box
@@ -183,7 +183,7 @@ with left_chart_column:
         with st.container(border=True):
             st.markdown("### 🦔 The Hedgehog 7 (Hedgehogs)")
             st.write("Diversified, low-beta structural moats built for volatility shield.")
-            st.write("Average dividend yield: **1.13%**")
+            st.write("Average dividend yield: **3.94%**")
             
             st.dataframe(
                 hedge7_data, 
